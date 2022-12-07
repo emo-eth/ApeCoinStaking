@@ -16,7 +16,7 @@ This is the main contract that handles staking and rewards.
 This contract allows users to vote on proposals using their staked ApeCoin.
 ## Changes
 
-- The deploy script included in the original Horizen Labs repository has been ported as a Foundry Script (`ccript/DeployContracts.s.sol`)
+- The deploy script included in the original Horizen Labs repository has been ported as a Foundry Script (`script/DeployContracts.s.sol`)
 - Changed schema from `pragma solidity 0.8.10;` to `pragma solidity ^0.8.10;` to facilitate building extensions in forks of this repository with newer versions of Solidity
   - To more closely match the deployed contract, you may change the `solc` config in `foundry.toml` to `0.8.10`
 - Structs have been pulled into their own file (`lib/ApeCoinStakingStructs.sol`) as top-level members for ease of import into other files
