@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-interface ApeCoinStakingErrorsAndEvents {
-    /**
-     * Custom Events
-     */
+interface ApeCoinStakingEvents {
     event UpdatePool(
         uint256 indexed poolId, uint256 lastRewardedBlock, uint256 stakedAmount, uint256 accumulatedRewardsPerShare
     );
@@ -23,23 +20,4 @@ interface ApeCoinStakingErrorsAndEvents {
     event ClaimRewardsPairNft(
         address indexed user, uint256 amount, uint256 mainTypePoolId, uint256 mainTokenId, uint256 bakcTokenId
     );
-
-    error DepositMoreThanOneAPE();
-    error InvalidPoolId();
-    error StartMustBeGreaterThanEnd();
-    error StartNotWholeHour();
-    error EndNotWholeHour();
-    error StartMustEqualLastEnd();
-    error CallerNotOwner();
-    error MainTokenNotOwnedOrPaired();
-    error BAKCNotOwnedOrPaired();
-    error BAKCAlreadyPaired();
-    error ExceededCapAmount();
-    error NotOwnerOfMain();
-    error NotOwnerOfBAKC();
-    error ProvidedTokensNotPaired();
-    error ExceededStakedAmount();
-    error NeitherTokenInPairOwnedByCaller();
-    error SplitPairCantPartiallyWithdraw();
-    error UncommitWrongParameters();
 }

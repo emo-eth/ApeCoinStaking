@@ -45,7 +45,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import { ApeCoinStakingErrorsAndEvents } from "./ApeCoinStakingErrorsAndEvents.sol";
+import "./lib/ApeCoinStakingErrors.sol";
+import { ApeCoinStakingEvents } from "./lib/ApeCoinStakingEvents.sol";
 import {
     Pool,
     TimeRange,
@@ -58,14 +59,14 @@ import {
     PairingStatus,
     DashboardStake,
     DashboardPair
-} from "./ApeCoinStakingStructs.sol";
+} from "./lib/ApeCoinStakingStructs.sol";
 /**
  * @title ApeCoin Staking Contract
  * @notice Stake ApeCoin across four different pools that release hourly rewards
  * @author HorizenLabs
  */
 
-contract ApeCoinStaking is Ownable, ApeCoinStakingErrorsAndEvents {
+contract ApeCoinStaking is Ownable, ApeCoinStakingEvents {
     using SafeCast for uint256;
     using SafeCast for int256;
 
