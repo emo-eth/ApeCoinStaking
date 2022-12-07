@@ -45,98 +45,31 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-
+import { ApeCoinStakingErrorsAndEvents } from "./ApeCoinStakingErrorsAndEvents.sol";
+import {
+    Pool,
+    TimeRange,
+    PoolUI,
+    Position,
+    SingleNft,
+    PairNftDepositWithAmount,
+    PairNftWithdrawWithAmount,
+    PairNft,
+    PairingStatus,
+    DashboardStake,
+    DashboardPair
+} from "./ApeCoinStakingStructs.sol";
 /**
  * @title ApeCoin Staking Contract
  * @notice Stake ApeCoin across four different pools that release hourly rewards
  * @author HorizenLabs
  */
-contract ApeCoinStaking is Ownable {
+
+contract ApeCoinStaking is Ownable, ApeCoinStakingErrorsAndEvents {
     using SafeCast for uint256;
     using SafeCast for int256;
 
-    /// @notice State for ApeCoin, BAYC, MAYC, and Pair Pools
-    struct Pool {
-        uint48 lastRewardedTimestampHour;
-        uint16 lastRewardsRangeIndex;
-        uint96 stakedAmount;
-        uint96 accumulatedRewardsPerShare;
-        TimeRange[] timeRanges;
-    }
-
-    /// @notice Pool rules valid for a given duration of time.
-    /// @dev All TimeRange timestamp values must represent whole hours
-    struct TimeRange {
-        uint48 startTimestampHour;
-        uint48 endTimestampHour;
-        uint96 rewardsPerHour;
-        uint96 capPerPosition;
-    }
-
-    /// @dev Convenience struct for front-end applications
-    struct PoolUI {
-        uint256 poolId;
-        uint256 stakedAmount;
-        TimeRange currentTimeRange;
-    }
-
-    /// @dev Per address amount and reward tracking
-    struct Position {
-        uint256 stakedAmount;
-        int256 rewardsDebt;
-    }
-
     mapping(address => Position) public addressPosition;
-
-    /// @dev Struct for depositing and withdrawing from the BAYC and MAYC NFT pools
-    struct SingleNft {
-        uint32 tokenId;
-        uint224 amount;
-    }
-    /// @dev Struct for depositing from the BAKC (Pair) pool
-
-    struct PairNftDepositWithAmount {
-        uint32 mainTokenId;
-        uint32 bakcTokenId;
-        uint184 amount;
-    }
-    /// @dev Struct for withdrawing from the BAKC (Pair) pool
-
-    struct PairNftWithdrawWithAmount {
-        uint32 mainTokenId;
-        uint32 bakcTokenId;
-        uint184 amount;
-        bool isUncommit;
-    }
-    /// @dev Struct for claiming from an NFT pool
-
-    struct PairNft {
-        uint128 mainTokenId;
-        uint128 bakcTokenId;
-    }
-    /// @dev NFT paired status.  Can be used bi-directionally (BAYC/MAYC -> BAKC) or (BAKC -> BAYC/MAYC)
-
-    struct PairingStatus {
-        uint248 tokenId;
-        bool isPaired;
-    }
-
-    // @dev UI focused payload
-    struct DashboardStake {
-        uint256 poolId;
-        uint256 tokenId;
-        uint256 deposited;
-        uint256 unclaimed;
-        uint256 rewards24hr;
-        DashboardPair pair;
-    }
-    /// @dev Sub struct for DashboardStake
-
-    struct DashboardPair {
-        uint256 mainTokenId;
-        uint256 mainTypePoolId;
-    }
-    /// @dev Placeholder for pair status, used by ApeCoin Pool
 
     DashboardPair private NULL_PAIR = DashboardPair(0, 0);
 
@@ -161,47 +94,6 @@ contract ApeCoinStaking is Ownable {
     mapping(uint256 => mapping(uint256 => PairingStatus)) public mainToBakc;
     /// @dev bakc Token ID => main type pool ID: 1: BAYC 2: MAYC => main token ID
     mapping(uint256 => mapping(uint256 => PairingStatus)) public bakcToMain;
-
-    /**
-     * Custom Events
-     */
-    event UpdatePool(
-        uint256 indexed poolId, uint256 lastRewardedBlock, uint256 stakedAmount, uint256 accumulatedRewardsPerShare
-    );
-    event Deposit(address indexed user, uint256 amount, address recipient);
-    event DepositNft(address indexed user, uint256 indexed poolId, uint256 amount, uint256 tokenId);
-    event DepositPairNft(
-        address indexed user, uint256 amount, uint256 mainTypePoolId, uint256 mainTokenId, uint256 bakcTokenId
-    );
-    event Withdraw(address indexed user, uint256 amount, address recipient);
-    event WithdrawNft(address indexed user, uint256 indexed poolId, uint256 amount, address recipient, uint256 tokenId);
-    event WithdrawPairNft(
-        address indexed user, uint256 amount, uint256 mainTypePoolId, uint256 mainTokenId, uint256 bakcTokenId
-    );
-    event ClaimRewards(address indexed user, uint256 amount, address recipient);
-    event ClaimRewardsNft(address indexed user, uint256 indexed poolId, uint256 amount, uint256 tokenId);
-    event ClaimRewardsPairNft(
-        address indexed user, uint256 amount, uint256 mainTypePoolId, uint256 mainTokenId, uint256 bakcTokenId
-    );
-
-    error DepositMoreThanOneAPE();
-    error InvalidPoolId();
-    error StartMustBeGreaterThanEnd();
-    error StartNotWholeHour();
-    error EndNotWholeHour();
-    error StartMustEqualLastEnd();
-    error CallerNotOwner();
-    error MainTokenNotOwnedOrPaired();
-    error BAKCNotOwnedOrPaired();
-    error BAKCAlreadyPaired();
-    error ExceededCapAmount();
-    error NotOwnerOfMain();
-    error NotOwnerOfBAKC();
-    error ProvidedTokensNotPaired();
-    error ExceededStakedAmount();
-    error NeitherTokenInPairOwnedByCaller();
-    error SplitPairCantPartiallyWithdraw();
-    error UncommitWrongParameters();
 
     /**
      * @notice Construct a new ApeCoinStaking instance
