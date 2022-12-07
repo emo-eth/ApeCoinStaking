@@ -26,6 +26,6 @@ This contract allows users to vote on proposals using their staked ApeCoin.
 
 ## Testing
 
-The included `BaseTest.sol` is meant as a base for writing Foundry tests. It configures a fork of Ethereum Mainnet at block 16131000, and includes internal variables that point to all relevant mainnet smart contracts. It also includes helper functions to grant ApeCoin or BAYC/MAYC/BAKC tokens to specified accounts to facilitate testing.
+The included `BaseTest.sol` is meant as a base for writing Foundry tests. It configures a fork of Ethereum Mainnet at block `16119274`, after the staking contract `TimeRange`s were configured and ownership transferred, but before any stakes had been deposited. It includes internal variables that point to all relevant mainnet smart contracts as well as helper functions to grant ApeCoin or BAYC/MAYC/BAKC tokens to specified accounts.
 
 The included `ApeCoinStaking.t.sol` inherits from `BaseTest.sol`, grants the test contract some ApeCoin and relevant NFTs, and ensures it can call the main deposit methods on the ApeCoinStaking contract as deployed on Mainnet.

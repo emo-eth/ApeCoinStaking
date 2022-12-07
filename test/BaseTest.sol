@@ -24,7 +24,7 @@ contract BaseTest is Test {
 
     function setUp() public virtual {
         // always fork mainnet at block 16131000 (2022-12-07 06:13:35)
-        vm.createSelectFork(stdChains["mainnet"].rpcUrl, 16131000);
+        vm.createSelectFork(stdChains["mainnet"].rpcUrl, 16119274);
     }
 
     /**
