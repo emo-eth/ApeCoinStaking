@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import { BaseTest } from "./BaseTest.sol";
 import { IERC721 } from "forge-std/interfaces/IERC721.sol";
 import { IERC20 } from "forge-std/interfaces/IERC20.sol";
-import { SingleNft, PairNftDepositWithAmount } from "../src/ApeCoinStakingStructs.sol";
+import { SingleNft, PairNftDepositWithAmount } from "../src/lib/ApeCoinStakingStructs.sol";
 
 contract ApeCoinStakingTest is BaseTest {
     function setUp() public override {

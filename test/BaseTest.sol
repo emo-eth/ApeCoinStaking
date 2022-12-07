@@ -3,11 +3,15 @@ pragma solidity ^0.8.17;
 
 import { Test } from "forge-std/Test.sol";
 import { ApeCoinStaking } from "../src/ApeCoinStaking.sol";
+import { ApeCoinStakedVoting } from "../src/ApeCoinStakedVoting.sol";
 import { IERC721 } from "forge-std/interfaces/IERC721.sol";
 import { IERC20 } from "forge-std/interfaces/IERC20.sol";
 
 contract BaseTest is Test {
-    ApeCoinStaking stake;
+    // test against the deployed contracts
+    ApeCoinStaking stake = ApeCoinStaking(0x5954aB967Bc958940b7EB73ee84797Dc8a2AFbb9);
+    ApeCoinStakedVoting voting = ApeCoinStakedVoting(0x0187Ae64E905b4FE7Dd1568a5642fbEf05E96e71);
+
     IERC20 APECOIN = IERC20(0x4d224452801ACEd8B2F0aebE155379bb5D594381);
     IERC721 BAYC = IERC721(0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D);
     IERC721 MAYC = IERC721(0x60E4d786628Fea6478F785A6d7e704777c86a7c6);
@@ -21,8 +25,6 @@ contract BaseTest is Test {
     function setUp() public virtual {
         // always fork mainnet at block 16131000 (2022-12-07 06:13:35)
         vm.createSelectFork(stdChains["mainnet"].rpcUrl, 16131000);
-        // test against the deployed contract
-        stake = ApeCoinStaking(0x5954aB967Bc958940b7EB73ee84797Dc8a2AFbb9);
     }
 
     /**
