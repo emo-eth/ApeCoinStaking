@@ -20,7 +20,7 @@ This contract allows users to vote on proposals using their staked ApeCoin.
 - Changed schema from `pragma solidity 0.8.10;` to `pragma solidity ^0.8.10;` to facilitate building extensions in forks of this repository with newer versions of Solidity
   - To more closely match the deployed contract, you may change the `solc` config in `foundry.toml` to `0.8.10`
 - Structs have been pulled into their own file (`lib/ApeCoinStakingStructs.sol`) as top-level members for ease of import into other files
-- Errors have been pulled into their own file (`lib/ApeCoinStakingErrors.sol`) for ease of import into  other files
+- Errors have been pulled into their own file (`lib/ApeCoinStakingErrors.sol`) as top-level members for ease of import into  other files
 - Events have been pulled into a separate interface (`lib/ApeCoinStakingEvents.sol`) for ease of inheritance by test contracts
 - Formatted with `forge fmt` with custom settings in `foundry.toml`
 
